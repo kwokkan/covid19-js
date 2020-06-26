@@ -1,0 +1,11 @@
+{
+  "name": "covid19-js",
+  "version": "1.0.0-alpha.1",
+  "main": "index.js",
+  "repository": "https://github.com/kwokkan/covid19-js.git",
+  "author": "kwokkan <kwokkan@users.noreply.github.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/d3": "5.7.2"
+  }
+}
