@@ -4,6 +4,7 @@
     const app = document.getElementById("app");
     const dateRegex = /\d\d\d\d\-\d\d\-\d\d/;
     const dateParser = d3.utcParse("%Y-%m-%d");
+    const dateFormat = d3.timeFormat("%Y-%m-%d");
 
     const margin = {
         top: 30,
@@ -41,7 +42,7 @@
                 type: x.transportation_type,
                 values: columnNames
                     .reduce(function (obj, key) {
-                        obj.push(parseFloat(x[key]) || null);
+                        obj.push(parseInt(x[key]) - 100 || null);
 
                         return obj;
                     }, [])
@@ -64,7 +65,7 @@
                 .call(d3.axisBottom(x).ticks(width / 80).tickSizeOuter(0));
 
             const y = d3.scaleLinear()
-                .domain([0, d3.max(data.data, d => d3.max(d.values))]).nice()
+                .domain([d3.min(data.data, d => d3.min(d.values)), d3.max(data.data, d => d3.max(d.values))]).nice()
                 .range([height - margin.bottom, margin.top]);
 
             const yAxis = g => g
@@ -138,7 +139,9 @@
                     const s = d3.least(data.data, d => Math.abs(d.values[i] - ym));
                     path.attr("stroke", d => d === s ? null : "#ddd").filter(d => d === s).raise();
                     dot.attr("transform", `translate(${x(data.columns[i])},${y(s.values[i])})`);
-                    dot.select("text").text(`${s.name} (${s.values[i]})`);
+
+                    const altName = s.altName ? ` (${s.altName})` : "";
+                    dot.select("text").text(`${s.name} ${altName} - ${dateFormat(data.columns[i])} - ${s.values[i]}`);
                 }
 
                 function entered() {
